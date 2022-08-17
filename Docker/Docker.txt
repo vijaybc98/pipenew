@@ -1,0 +1,31 @@
+Docker installation
+
+1. Update ubuntu 
+	sudo apt update 
+
+2. Install support packages for Docker
+	sudo apt-get install -y ca-certificates curl gnupg lab-release
+
+3. Need add key to download Docker 
+	sudo mkdir -p /etc/apt/keyrings
+	
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg	
+
+4. Add docker packages to apt repository 
+	echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+5. Install Docker 
+	sudo apt-get update
+ 	sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+
+Assignment: 1. Create docker hub account 
+
+Login to your hub account 
+	docker login 
+
+Just try 
+	STEP 1: create directory in /home/ubuntu/jenkins_home 
+	STEP 2: docker run -it -d -p 8080:8080 -p 50000:50000 -v /home/ubuntu/jenkins_home:/var/jenkins_home jenkins/jenkins:lts
