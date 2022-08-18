@@ -55,3 +55,78 @@ Login to your hub account
 Just try 
 	STEP 1: create directory in /home/ubuntu/jenkins_home 
 	STEP 2: docker run -it -d -p 8080:8080 -p 50000:50000 -v /home/ubuntu/jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+
+
+Docker images 
+	
+To Download a images from docker hub / any registry 
+	docker pull <image_name>:<tag>
+	note: 1. The default tag will be always latest.
+	      2. if we wont specify any tag latest will be considered 
+To Delete docker image/images
+	docker rmi <image1> <image2> .....
+
+To Delete all the local images 
+	docker images -q | xargs -I{} docker rmi "{}"
+	docker rmi $(docker images -q)
+
+To push a image to your repo 
+
+		1. Create a tag which matches your repo syntax 
+			docker tag <old_name> <new_name>
+			
+			ex: docker tag ubuntu:22.10 harshajain/test:1.0
+		
+		2. Push the image 	
+			docoker push <username>/<image_name>:<tag>	
+		
+			ex: docker push harshajain/test:1.0
+
+
+Docker container 
+	A container is a set of isolated processes and resources. Linux achieves 
+	this by using namespaces, which allows processes to access only resources 
+	in that particular namespace, which allows having a process tree means set 
+	of processes that is completely independent of the rest of the systems processes.
+	
+	Docker definition: A container is a standard unit of software that packages 
+	up code and all its dependencies so the application runs quickly and reliably 
+	from one computing environment to another.
+
+To list all running containers 
+	docker ps
+	docker container ls 
+
+To list all the containers (running, paused, stopped)
+	docker ps 
+	docker container ls -a
+
+To delete a container 
+	docker rm <conatiner_id>
+	docker container rm <container_id>
+
+To stop all running containers 
+	docker stop $(docker ps -q)
+
+To delete all stopped containers 
+	docker rm $(docker ps --filter "status=exited" -q)
+
+To create a container from a image 
+	docker run -it -d --name <container_name> <image_repo>:<tag>
+
+	Note:	-i: Interactive mode
+		-t: tty terminal 
+		-d: detached mode (creates container in background)
+		--name: The name for the container to be created
+		1. Always provide image name at the end of the command 
+
+
+
+
+
+
+
+
+
+
+
