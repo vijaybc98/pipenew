@@ -209,6 +209,7 @@ COPY and ADD
 	COPY <source_path_from_build_context> <destination_inside_image>	  
 	ADD <source_path_from_build_context> <destination_inside_image>	  
 
+
 CMD and ENTRYPOINT
 		shell format 
 			CMD "ls -lrt"
