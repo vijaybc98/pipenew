@@ -209,10 +209,42 @@ COPY and ADD
 	COPY <source_path_from_build_context> <destination_inside_image>	  
 	ADD <source_path_from_build_context> <destination_inside_image>	  
 
-CMD and ENTRYPOINT 
+CMD and ENTRYPOINT
+		shell format 
+			CMD "ls -lrt"
+			ENTRYPOINT "ls -lrt"
+			
+		EXEC Format
+			CMD ["ls","-l","-rt"]
+			ENTRYPOINT ["ls","-lrt"]
+			
+		- Both CMD and ENTRYPOINT are used to define the execution command of the container which will be created 
+		  from this image.
+		- If we use multiple CMD or ENTRYPOINT in the same Dockerfile only the latest one will be considered 
+		  and all the other CMD or ENTRYPOINT will be ignored.	
+		- If we use both CMD and ENTRYPOINT in the same Dockerfile, ENTRYPOINT will get the 
+		  higest priority and the command of CMD will become as argumetns to ENTRYPOINT	
+		  
+		 Difference  
+		  -	CMD command can be overridden at the runtime.	
+		  - ENTRYPOINT can't be overridden at the runtime but the runtime command
+		    will become parameters to ENTRYPOINT command.
+		  
+		Note: Q. Can we override ENTRYPOINT 
+				 Yes, after docker 1.6 version docker has given option to over
+					  Entrypoint command at the runtime using --entrypoint 
+	
+	EXPOSE 
+		EXPOSE <port_number>
+		- Used to expose a port to the docker network 
+		- This is make the  port accessible by all the other containers in the 
+		  same docker network.	
 
-WORKDIR
-VOLUME 
+	WORKDIR
+		This is used to set the working directory for all the instructions that follows it
+		such as RUN, CMD, ENTRYPOINT, COPY, ADD
+		
+		WORKDIR <path>
 	
 
 IQ: What is the difference b/w CMD and ENTRYPOINT
@@ -222,8 +254,16 @@ IQ: What is the difference b/w CMD and ENTRYPOINT
     Try to learn source command
 
 Dangling Images 
+	Dangling images are created while executing layers in image build process that have no relationship 
+	to any tagged images. They no longer serve a purpose and it consume disk space.
 	
-   	To delete dangling images 
+	To list dangling images 
+	    docker images -f dangling=true
+	
+	To remove only dangling images 
+	    docker rmi $(docker images -f dangling=true -q)
+
+   	To delete all unused images including dangling image
 	    docker image prune
 
 	    docker system prune 
