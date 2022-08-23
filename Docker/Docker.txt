@@ -279,8 +279,21 @@ Dangling Images
 Docker volumes 
 	Bind mount 
 
+Docker maven example 
+	
+	docker run -it --rm -v $(pwd)/libraries:/root/.m2 -w /app -v "$(pwd)":/app maven mvn clean package
+
+	docker run -it --rm -v $(pwd)/libraries:/root/.m2 -w /app -v "$(pwd)":/app maven mvn clean package -Dmaven.test.skip=true
+
 Docker multi-stage build 
 	   
+
+
+	docker build -t maven-app .
+	docker stop calc
+	docker cp calc:/usr/local/tomcat/webapps/calculator.war /home/ubuntu/
+	docker run -it --rm -d -p 8095:8080 --name calc maven-app 
 		
+
 
 
