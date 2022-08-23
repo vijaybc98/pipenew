@@ -276,24 +276,119 @@ Dangling Images
   		  - all dangling images
   		  - all dangling build cache
 
-Docker volumes 
-	Bind mount 
+Docker Volumes
+ 	- As the layers inside the image are readonly which means once the image is created 
+	  we cannot change/edit so we cannot put the conatainer data in image.
+	- Container create a top most RW layer and all the runtime data is saved here. 
+	- Container layer is temparary layer, If we loose the container we loose data. so
+	  to retain/persist the container runtime data we need docker volumes.
 
-Docker maven example 
+	Bind Mounts 
+		- we can mount host machine filesystem (files and directories) to the container
+		
+			docker run -v <host_path>:<container_path>
 	
-	docker run -it --rm -v $(pwd)/libraries:/root/.m2 -w /app -v "$(pwd)":/app maven mvn clean package
+	Docker Volumes		
+		- These are docker managed filesystem and we use docker commands to manage these
+		  volumes 
+		- Volumes are easier to manage, backup or migrate than bind mounts.
+		- Volumes supports many drivers which means we can maunt many types of filesystem.
+		- Default location of docker volume is /var/lib/docker/volumes  	
+		
+		docker run -v <volume_name>:<container_path>
+		
+		To create volume 
+			docker volume create <volume_name>
+			
+		To list volume 
+			docker volume ls	
+			
+		To Delete volume 
+			docker volume rm <volume_name>
 
-	docker run -it --rm -v $(pwd)/libraries:/root/.m2 -w /app -v "$(pwd)":/app maven mvn clean package -Dmaven.test.skip=true
 
-Docker multi-stage build 
+
+
+Multistage build 
+	How to optimize docker build process ?
+	How to reduce the size of the docker image or cotainer ? 
+
+	After docker 1.6 version docker released this option.
+	1. There are 2 problems with the normal build process 
+			1. Size: challenge is to keep the image and its containers size as minimal as  		
+			   possible.
+			2. larger the surface area more the application is vurnalable to attacks. 
+	
+		- Multistage build allows us to define multiple FROM in same Dockerfile.
+		- Dependency between multile FROM is maintained by naming FROM using 
+		  AS keyword and we can refer this name in another FROM.
+
+				FROM <base_image> AS <STAGE_NAME>
+				
+		- Only the final FROM image is created leaving back all the other FROM.
+		- Copy only the required files from the named FROM stage like below.
+				FROM final_build
+				COPY --from <STAGE_NAME> <src_named_stage> <dest>
+	
+	2. Always try to use the slim / alpine / stretch version of base image instead 
+	   of using the fully loaded base image.
 	   
 
-
+Build and deploy maven application using docker.
 	docker build -t maven-app .
 	docker stop calc
 	docker cp calc:/usr/local/tomcat/webapps/calculator.war /home/ubuntu/
 	docker run -it --rm -d -p 8095:8080 --name calc maven-app 
 		
+Docker maven direct run example 
 
+	To build the war file
+		docker run -it --rm -v $(pwd)/libraries:/root/.m2 -w /app -v "$(pwd)":/app maven mvn clean package
+	
+	To build the war file with test phase skipped
+		docker run -it --rm -v $(pwd)/libraries:/root/.m2 -w /app -v "$(pwd)":/app maven mvn clean package -Dmaven.test.skip=true
+	
+	To run a test sever for Integration test 
+		docker run -it -d --rm -v maven_repo:/root/.m2 \
+    			-v "$(pwd)":/app -w /app \
+   		 	-p 9999:9999 \
+    			--network maven \
+    			--name jetty_container maven:3.8.6-openjdk-18-slim mvn jetty:run
 
+	To run Junit test 
+		docker run -it --rm -v maven_repo:/root/.m2 \
+   			-v "$(pwd)":/app -w /app \
+    			--network maven maven:3.8.6-openjdk-18-slim mvn clean test		
+
+	To run Integration test 
+		docker run -it --rm -v maven_repo:/root/.m2 \
+    			-v "$(pwd)":/app -w /app \
+    			--network maven maven:3.8.6-openjdk-18-slim mvn clean integration-test 
+
+Docker networking 
+	Publish 
+		PUBLISH = Expose + outside world port mapping 
+			
+	- publics will bind the container port to the host port which we can access from 
+	  outside world using <host_ip>:<port_mapped>
+	
+	- To publish a port 
+		docker run -p <host_port>:<container_port> .....
+		
+	-P publish_all
+		It binds all the exposed ports of the container to host machine port
+		
+	To map direct IP address to the host 
+		port to port 
+			ip:<host_port>:<container_port>
+			ip::<container_port>
+			
+	Range of ports 
+		many to one 
+			-p 8080-8090:8080
+		many to many 
+			-p 8080-8085:8086-8091
+			 - The total number of host ports in range should be same as the 
+			   total number of container ports range.
+				
 
