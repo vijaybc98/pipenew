@@ -276,6 +276,11 @@ Dangling Images
   		  - all dangling images
   		  - all dangling build cache
 
+Docker volumes 
+	Bind mount 
 
+Docker multi-stage build 
+	   
+		
 
 
