@@ -6,6 +6,8 @@ pipeline{
 			steps{
 				echo "BUILD stage"
 				sh ''' 
+					ls
+					pwd
 					cd /var/lib/jenkins/workspace/jpl-d-image
 					docker build -t bvg98/viji:1.10 .
 				'''
