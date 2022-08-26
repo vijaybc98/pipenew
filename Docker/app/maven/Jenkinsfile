@@ -6,7 +6,7 @@ pipeline{
 			steps{
 				echo "BUILD stage"
 				sh ''' 
-					cd /var/lib/jenkins/workspace/final
+					cd /var/lib/jenkins/workspace/pipenew
 					docker build -t sandeep2523/jenkins:1.10 .
 				'''
 			}
@@ -14,8 +14,8 @@ pipeline{
 		stage("DOCKER PUSH"){
 	                 steps{
 				sh 'docker image ls'
-				sh 'docker push sandeep2523/jenkins:1.10'
-				echo "Docker image pushed to docker hub successfuly"
+				//sh 'docker push sandeep2523/jenkins:1.10'
+				//echo "Docker image pushed to docker hub successfuly"
 			}
 		}
 		
