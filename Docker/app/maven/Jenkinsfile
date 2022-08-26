@@ -8,7 +8,7 @@ pipeline{
 				sh ''' 
 					ls
 					pwd
-					cd /var/lib/jenkins/workspace/jpl-d-image
+					cd /var/lib/jenkins/workspace/jpl-d-image/Docker/app/maven
 					docker build -t bvg98/viji:1.10 .
 				'''
 			}
@@ -24,7 +24,7 @@ pipeline{
 		stage("Docker-run"){
 			steps{
 				echo "Running container"
-				sh 'docker run -it -d -p 8060:8080 --name sandeep-tomcat bvg98/viji:1.10'
+				sh 'docker run -it -d -p 8060:8080 --name viji-tomcat bvg98/viji:1.10'
 				sh 'docker ps'
 				
 			}
