@@ -3,7 +3,6 @@ WORKDIR /app
 COPY . /app
 COPY ./libraries /root/.m2
 RUN cd ./target; ls
-RUN apt update
 RUN mvn clean package -Dmaven.test.skip=true
 
 FROM tomcat:8.0-alpine
